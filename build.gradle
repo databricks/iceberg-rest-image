@@ -24,7 +24,7 @@ repositories {
 }
 
 ext {
-  icebergVersion = '1.6.0'
+  icebergVersion = '1.6.1'
   hadoopVersion = '3.3.6'
 }
 
@@ -39,6 +39,8 @@ dependencies {
 
   implementation "org.apache.hadoop:hadoop-common:${hadoopVersion}"
   implementation "org.apache.hadoop:hadoop-hdfs-client:${hadoopVersion}"
+  implementation "org.apache.hadoop:hadoop-main:${hadoopVersion}"
+  implementation "org.apache.hadoop:hadoop-aws:${hadoopVersion}"
 
   runtimeOnly "org.apache.iceberg:iceberg-aws-bundle:${icebergVersion}"
   runtimeOnly "org.apache.iceberg:iceberg-azure-bundle:${icebergVersion}"
