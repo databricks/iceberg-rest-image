@@ -64,6 +64,8 @@ public class RESTCatalogServer {
     if (!catalogProperties.containsKey(CatalogProperties.CATALOG_IMPL)) {
       catalogProperties.putIfAbsent(CatalogProperties.CATALOG_IMPL, "org.apache.iceberg.jdbc.JdbcCatalog");
       catalogProperties.putIfAbsent(CatalogProperties.URI, "jdbc:sqlite:file:/tmp/iceberg_rest_mode=memory");
+      catalogProperties.putIfAbsent("jdbc.user", "user");
+      catalogProperties.putIfAbsent("jdbc.password", "password");
       catalogProperties.putIfAbsent("jdbc.schema-version", "V1");
     }
 
