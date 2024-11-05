@@ -28,10 +28,30 @@ ext {
   hadoopVersion = '3.3.6'
 }
 
+configurations {
+  iceberg_core_test { transitive = false }
+}
+
+dependencies {
+  iceberg_core_test "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
+}
+
+task unzipJar(type: Copy) {
+  from zipTree(configurations.iceberg_core_test.singleFile)
+  into ("$buildDir/libs/iceberg-tests")
+  include '**/*.class'
+  exclude '**/S3ABlockOutputStream.class'
+  dependsOn configurations.iceberg_core_test
+}
+
 dependencies {
   implementation "org.apache.iceberg:iceberg-api:${icebergVersion}"
   implementation "org.apache.iceberg:iceberg-core:${icebergVersion}"
-  implementation "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
+
+  implementation files("$buildDir/libs/iceberg-tests") {
+    builtBy "unzipJar"
+  }
+//  implementation "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
   implementation "org.apache.iceberg:iceberg-aws:${icebergVersion}"
   implementation "org.apache.iceberg:iceberg-azure:${icebergVersion}"
   implementation "org.apache.iceberg:iceberg-gcp:${icebergVersion}"
