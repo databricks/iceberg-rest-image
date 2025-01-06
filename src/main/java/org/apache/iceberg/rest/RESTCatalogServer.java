@@ -102,7 +102,6 @@ public class RESTCatalogServer {
 
   public static void main(String[] args) throws Exception {
     CatalogContext catalogContext = backendCatalog();
-
     try (RESTCatalogAdapter adapter = new RESTServerCatalogAdapter(catalogContext)) {
       RESTCatalogServlet servlet = new RESTCatalogServlet(adapter);
 
@@ -112,7 +111,7 @@ public class RESTCatalogServer {
       servletHolder.setInitParameter("javax.ws.rs.Application", "ServiceListPublic");
       context.addServlet(servletHolder, "/*");
       context.setVirtualHosts(null);
-      context.setGzipHandler(new GzipHandler());
+      context.insertHandler(new GzipHandler());
 
       Server httpServer = new Server(PropertyUtil.propertyAsInt(System.getenv(), "REST_PORT", 8181));
       httpServer.setHandler(context);

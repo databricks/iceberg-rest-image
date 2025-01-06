@@ -24,8 +24,8 @@ repositories {
 }
 
 ext {
-  icebergVersion = '1.6.1'
-  hadoopVersion = '3.3.6'
+  icebergVersion = '1.7.1'
+  hadoopVersion = '3.4.1'
 }
 
 configurations {
@@ -36,11 +36,12 @@ dependencies {
   iceberg_core_test "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
 }
 
-task unzipJar(type: Copy) {
+task unzipIcebergTestJar(type: Copy) {
   from zipTree(configurations.iceberg_core_test.singleFile)
   into ("$buildDir/libs/iceberg-tests")
   include '**/*.class'
   exclude '**/S3ABlockOutputStream.class'
+  exclude '**/RESTCatalogAdapter.class'
   dependsOn configurations.iceberg_core_test
 }
 
@@ -49,18 +50,23 @@ dependencies {
   implementation "org.apache.iceberg:iceberg-core:${icebergVersion}"
 
   implementation files("$buildDir/libs/iceberg-tests") {
-    builtBy "unzipJar"
+    builtBy "unzipIcebergTestJar"
   }
-//  implementation "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
+
+  implementation "org.apache.iceberg:iceberg-core:${icebergVersion}:tests"
   implementation "org.apache.iceberg:iceberg-aws:${icebergVersion}"
   implementation "org.apache.iceberg:iceberg-azure:${icebergVersion}"
   implementation "org.apache.iceberg:iceberg-gcp:${icebergVersion}"
+  implementation "org.apache.iceberg:iceberg-open-api:${icebergVersion}:test-fixtures"
   implementation "org.apache.iceberg:iceberg-bundled-guava:${icebergVersion}"
 
   implementation "org.apache.hadoop:hadoop-common:${hadoopVersion}"
   implementation "org.apache.hadoop:hadoop-hdfs-client:${hadoopVersion}"
   implementation "org.apache.hadoop:hadoop-main:${hadoopVersion}"
   implementation "org.apache.hadoop:hadoop-aws:${hadoopVersion}"
+
+  implementation "org.eclipse.jetty:jetty-server:11.0.4"
+  implementation "org.eclipse.jetty:jetty-servlet:11.0.4"
 
   runtimeOnly "org.apache.iceberg:iceberg-aws-bundle:${icebergVersion}"
   runtimeOnly "org.apache.iceberg:iceberg-azure-bundle:${icebergVersion}"
